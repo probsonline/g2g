@@ -65,14 +65,48 @@ void print_array(int p[], int n){
 		cout << " }" << endl ;
 }
 
+
+bool compare_data(int *sample, int *comparison, int n)
+{
+	int i=0;
+	while(i<n && sample[i]==comparison[i]){
+		i++;
+	}
+
+	//only interested in matches, differing by 1
+	if (i != n)
+	{
+		if (comparison[i]-sample[i] == 1)
+		{
+			/* If comparison is only 1 greater in the first change place, then we found the next permutation */
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
+
 //p: array to hold the permutations
 //index: Current character/member to start the permutation with
 // number of characters
+bool found=false;
+int *starting_permutation;
+
 void get_permutations(int set[], int index, int n){
+
+	if (found) return;
+
 //    cout << "index= " << index << endl;
 	if (index==n) //reached the last character. so print it
 	{
-//		print_array(set, n);
+		found = compare_data(starting_permutation, set, n);
+		if (found)
+		{
+			cout << "found the next permutation ";
+		}
+		print_array(set, n);
 	}
 	else
 	{
@@ -140,7 +174,6 @@ int main()
     // Note that size of arr[] is considered 200 according to
     // the constraints mentioned in problem statement.
     int t, n;
-    int *starting_permutation;
     int * p;
 
 //    int arr[100];
@@ -170,16 +203,16 @@ int main()
         	cout << "invalid input" << endl;
         }
 
-#if 1
+
         //Calculate how many permutations are possible
 //        cout << "This number has " << get_factorial_recursive(n) << " permutations " << endl;
         p = new int[n];
         cout << "This number has " << get_factorial_nums(n, p) << " permutations " << endl;        //Find until what number the permutation is in order 
         get_permutations(p, 0, n);
-
+#if 0
         cout << "this was the permutation input (as starting permutation";
         print_array(starting_permutation, n);
-#endif 
+
         //Find permutations of the the subset from where the next greater one will start
         int m = get_sub_permutation_start(starting_permutation, n);
         cout << "the index from where the next big permutations will be found is  " << n-m << endl;
@@ -187,9 +220,10 @@ int main()
         initialize_list(permutations_list);
         print_list(permutations_list);
         cout << "we'll get " <<  get_factorial_recursive(n-m) << " permutations for finding the bigger one" << endl;
-        get_permutations2(p, n-m, n); //start getting permutations from one index less than from where the change starts
+        get_permutations(p, n-m, n); //start getting permutations from one index less than from where the change starts
+//        get_permutations2(p, n-m, n); //start getting permutations from one index less than from where the change starts
         perm2calls=0;
-#if 1
+
         int *next_perm = new int[n];
         if(search_next_permutation(starting_permutation, n, next_perm))
         {
@@ -306,27 +340,6 @@ void print_list(node *head)
 		current = current->next;
 	}	
 }
-
-bool compare_data(int *sample, int *comparison, int n)
-{
-	int i=0;
-	while(i<n && sample[i]==comparison[i]){
-		i++;
-	}
-
-	//only interested in matches, differing by 1
-	if (i != n)
-	{
-		if (comparison[i]-sample[i] == 1)
-		{
-			/* If comparison is only 1 greater in the first change place, then we found the next permutation */
-			return true;
-		}
-	}
-
-	return false;
-}
-
 
 bool compare_nodes(node *sample, node *comparison)
 {
