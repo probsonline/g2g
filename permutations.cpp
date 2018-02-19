@@ -69,6 +69,7 @@ void print_array(int p[], int n){
 bool compare_data(int *sample, int *comparison, int n)
 {
 	int i=0;
+	bool found=true;
 	while(i<n && sample[i]==comparison[i]){
 		i++;
 	}
@@ -78,7 +79,12 @@ bool compare_data(int *sample, int *comparison, int n)
 	{
 		if (comparison[i]-sample[i] == 1)
 		{
+			i = i+1; // now make sure that the other members are the smallest in the list now.
 			/* If comparison is only 1 greater in the first change place, then we found the next permutation */
+			while(i<n && sample[i]==comparison[i]){
+				i++;
+			}
+
 			return true;
 		}
 	}
@@ -168,6 +174,19 @@ bool search_next_permutation(int input[], int n, int next_perm[])
 	return search_list(permutations_list , input, next_perm, n);
 }
 
+bool check_if_greatest_permutation(int input[], int n)
+{
+//	cout << "check_if_greatest_permutation" << endl;
+	int i=0;
+	while(i < n && input[i] == n-i)
+	{
+//		cout << "Checking that " << input[i] << " is " << n-i << endl;
+		i++;
+	}
+
+	return (i==n)?true:false;
+}
+
 int main()
 {
 
@@ -180,6 +199,12 @@ int main()
 
     // Input the number of test cases you want to run
     cin >> t;
+
+    if (t < 1)
+    {
+    	cout << "Invalid number for test case input. Enter at leat one test case.\n";
+    	return 0;
+    }
 
     // One by one run for all input test cases
     while (t--)
@@ -196,20 +221,36 @@ int main()
 	        {
 	        	cin >> starting_permutation[i];
 	        }
+	        cout << "Input permutation: ";
+	        print_array(starting_permutation, n);
+
+	        p = new int[n];
+	        get_factorial_nums(n,p);
+	        if (check_if_greatest_permutation(starting_permutation, n))
+	        {
+		        cout << "The input is already the greated permutation. The sorted order is ";
+		        print_array(p, n);
+	        }
+	        else
+	        {
+		        cout << "Findng permutations"  << endl;        //Find until what number the permutation is in order 
+		        get_permutations(p, 0, n);
+	        }
 
         }
         else
         {
-        	cout << "invalid input" << endl;
+        	cout << "invalid input. the number must be positive" << endl;
         }
 
 
         //Calculate how many permutations are possible
 //        cout << "This number has " << get_factorial_recursive(n) << " permutations " << endl;
+#if 0
         p = new int[n];
         cout << "This number has " << get_factorial_nums(n, p) << " permutations " << endl;        //Find until what number the permutation is in order 
         get_permutations(p, 0, n);
-#if 0
+
         cout << "this was the permutation input (as starting permutation";
         print_array(starting_permutation, n);
 
